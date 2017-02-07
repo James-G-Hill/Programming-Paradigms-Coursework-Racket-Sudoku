@@ -27,13 +27,9 @@
       (list 1 2 3 4 5 6 7 8 9)
       (list digit)))
 
-;;; Transforms a list of digits into a list of sets.
-(define (rowTransform row)
-  (map setReplace row))
-
 ;;; Transforms the matrix into a list of lists of sets.
 (define (transform matrix)
-  (map rowTransform matrix))
+  (map (lambda (x) (map setReplace x)) matrix))
 
 ;;;
 ;;;  PROVIDER FUNCTION
@@ -41,5 +37,4 @@
 
 ;;; Provides all functions for testing.
 (provide setReplace
-         rowTransform
          transform)
