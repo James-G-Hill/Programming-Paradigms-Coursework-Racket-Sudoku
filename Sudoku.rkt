@@ -31,10 +31,15 @@
 (define (rowTransform row)
   (map setReplace row))
 
+;;; Transforms the matrix into a list of lists of sets.
+(define (transform matrix)
+  (map rowTransform matrix))
+
 ;;;
 ;;;  PROVIDER FUNCTION
 ;;;
 
 ;;; Provides all functions for testing.
 (provide setReplace
-         rowTransform)
+         rowTransform
+         transform)
