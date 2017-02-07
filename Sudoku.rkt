@@ -16,3 +16,13 @@
    (list 0 9 1 5 0 0 6 0 0)
    (list 0 0 0 0 7 8 1 0 3)
    (list 0 0 0 6 0 0 5 9 0)))
+
+;;;
+;;;  TRANSFORM FUNCTION
+;;;
+
+;;; Replaces digit 0 with set (1-9) or digit 1-9 with the digit.
+(define (setReplace digit)
+  (if (= 0 digit)
+      (list 1 2 3 4 5 6 7 8 9)
+      (list digit)))
