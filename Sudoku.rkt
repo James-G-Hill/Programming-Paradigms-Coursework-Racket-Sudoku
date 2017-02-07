@@ -26,3 +26,10 @@
   (if (= 0 digit)
       (list 1 2 3 4 5 6 7 8 9)
       (list digit)))
+
+;;;
+;;;  PROVIDER FUNCTION
+;;;
+
+;;; Provides all functions for testing.
+(provide setReplace)
