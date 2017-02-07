@@ -27,9 +27,14 @@
       (list 1 2 3 4 5 6 7 8 9)
       (list digit)))
 
+;;; Transforms a list of digits into a list of sets.
+(define (rowTransform row)
+  (map setReplace row))
+
 ;;;
 ;;;  PROVIDER FUNCTION
 ;;;
 
 ;;; Provides all functions for testing.
-(provide setReplace)
+(provide setReplace
+         rowTransform)
