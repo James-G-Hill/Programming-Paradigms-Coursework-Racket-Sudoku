@@ -59,8 +59,5 @@
 (check-equal? (setReplace 1) (list 1) "Replace 1 with a List (1)")
 (check-equal? (setReplace 9) (list 9) "Replace 1 with a List (9)")
 
-;;; Test 'rowTransform'.
-(check-equal? (rowTransform row) transformedRow "Transform a row of digits")
-
 ;;; Test 'transform'.
 (check-equal? (transform puzzle) transformedPuzzle "Transform a whole puzzle.")
