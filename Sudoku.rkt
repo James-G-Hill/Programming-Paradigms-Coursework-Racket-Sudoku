@@ -32,9 +32,18 @@
   (map (lambda (x) (map setReplace x)) matrix))
 
 ;;;
+;;;  COUNTING FUNCTION
+;;;
+
+;;; Check is singleton or not.
+(define (checkSingleton set)
+  (if (> (length set) 1) #f #t))
+
+;;;
 ;;;  PROVIDER FUNCTION
 ;;;
 
 ;;; Provides all functions for testing.
-(provide setReplace
+(provide checkSingleton
+         setReplace
          transform)
