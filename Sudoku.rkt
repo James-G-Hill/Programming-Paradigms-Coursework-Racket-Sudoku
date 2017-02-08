@@ -53,11 +53,20 @@
 (define (removeNumberRow row digit)
   (map (lambda (x) (removeNumber x digit)) row))
 
+;;; Remove the digit from column.
+(define (removeNumberColumn matrix column digit)
+  (map (lambda (x) (columnFilter x column digit)) matrix))
+
+;;; Find the column in a row and remove the digit.
+(define (columnFilter row column digit)
+    (list-set row (- column 1) (removeNumber (list-ref row (- column 1)) digit)))
+
 ;;; Remove number from set.
 (define (removeNumber set digit)
   (if (eq? #f (checkSingleton set))
       (filter (lambda (x)  (not (= x digit))) set)
       set))
+
 
 ;;;
 ;;;  PROVIDER FUNCTION
@@ -67,6 +76,7 @@
 (provide checkSingleton
          countNonSingletons
          removeNumber
+         removeNumberColumn
          removeNumberRow
          setReplace
          transform)
