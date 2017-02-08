@@ -32,6 +32,10 @@
   ((1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (7) (8) (1) (1 2 3 4 5 6 7 8 9) (3))
   ((1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (6) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (5) (9) (1 2 3 4 5 6 7 8 9))))
 
+;;; A singleton for testing.
+(define singleton
+  (list 1))
+
 ;;; A row for testing.
 (define row
   (list 0 2 5 0 0 1 0 0 0))
@@ -59,8 +63,13 @@
 (check-equal? (setReplace 1) (list 1) "Replace 1 with a List (1)")
 (check-equal? (setReplace 9) (list 9) "Replace 1 with a List (9)")
 
-;;; Test 'rowTransform'.
-(check-equal? (rowTransform row) transformedRow "Transform a row of digits")
-
 ;;; Test 'transform'.
 (check-equal? (transform puzzle) transformedPuzzle "Transform a whole puzzle.")
+
+;;;
+;;;  COUNTING TESTING
+;;;
+
+;;; Test 'checkSingleton'.
+(check-equal? (checkSingleton singleton) #t "Checks singleton is true")
+(check-equal? (checkSingleton row) #f "Checks singleton is false")
