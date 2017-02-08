@@ -73,3 +73,6 @@
 ;;; Test 'checkSingleton'.
 (check-equal? (checkSingleton singleton) #t "Checks singleton is true")
 (check-equal? (checkSingleton row) #f "Checks singleton is false")
+
+;;; Test 'countNonSingletons'.
+(check-equal? (countNonSingletons transformedPuzzle) 50 "Count singletons correctly")
