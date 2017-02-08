@@ -49,6 +49,10 @@
 ;;;  MAIN ALGORITHM
 ;;;
 
+;;; Remove digit from row.
+(define (removeNumberRow row digit)
+  (map (lambda (x) (removeNumber x digit)) row))
+
 ;;; Remove number from set.
 (define (removeNumber set digit)
   (if (eq? #f (checkSingleton set))
@@ -63,5 +67,6 @@
 (provide checkSingleton
          countNonSingletons
          removeNumber
+         removeNumberRow
          setReplace
          transform)
