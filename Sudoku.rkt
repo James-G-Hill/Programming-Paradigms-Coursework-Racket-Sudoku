@@ -46,11 +46,22 @@
 
 
 ;;;
+;;;  MAIN ALGORITHM
+;;;
+
+;;; Remove number from set.
+(define (removeNumber set digit)
+  (if (eq? #f (checkSingleton set))
+      (filter (lambda (x)  (not (= x digit))) set)
+      set))
+
+;;;
 ;;;  PROVIDER FUNCTION
 ;;;
 
 ;;; Provides all functions for testing.
 (provide checkSingleton
          countNonSingletons
+         removeNumber
          setReplace
          transform)
