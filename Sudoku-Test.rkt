@@ -53,6 +53,19 @@
    (list 1 2 3 4 5 6 7 8 9)
    (list 1 2 3 4 5 6 7 8 9)))
 
+;;; A 'transformed' row for testing.
+(define transformedRow5Removed
+  (list
+   (list 1 2 3 4 6 7 8 9)
+   (list 2)
+   (list 5)
+   (list 1 2 3 4 6 7 8 9)
+   (list 1 2 3 4 6 7 8 9)
+   (list 1)
+   (list 1 2 3 4 6 7 8 9)
+   (list 1 2 3 4 6 7 8 9)
+   (list 1 2 3 4 6 7 8 9)))
+
 
 ;;;
 ;;;  TRANSFORM TESTING
@@ -84,3 +97,7 @@
 ;;; Test 'removeNumber'.
 (check-equal? (removeNumber row 5) (list 0 2 0 0 1 0 0 0) "Remove a digit from a set")
 (check-equal? (removeNumber row 9) (list 0 2 5 0 0 1 0 0 0) "Attempt to remove a digit from a set")
+
+;;; Test 'removeNumberRow'.
+(check-equal? (removeNumberRow transformedRow 5) transformedRow5Removed "Remove a digit from all sets in a row")
+(check-equal? (removeNumberRow transformedRow5Removed 5) transformedRow5Removed "Attempt to remove a digit from all sets in a row")
