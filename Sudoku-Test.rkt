@@ -76,3 +76,11 @@
 
 ;;; Test 'countNonSingletons'.
 (check-equal? (countNonSingletons transformedPuzzle) 50 "Count singletons correctly")
+
+;;;
+;;;  MAIN ALGORITHM TESTING
+;;;
+
+;;; Test 'removeNumber'.
+(check-equal? (removeNumber row 5) (list 0 2 0 0 1 0 0 0) "Remove a digit from a set")
+(check-equal? (removeNumber row 9) (list 0 2 5 0 0 1 0 0 0) "Attempt to remove a digit from a set")
