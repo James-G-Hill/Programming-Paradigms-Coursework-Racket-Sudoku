@@ -31,13 +31,19 @@
 (define (transform matrix)
   (map (lambda (x) (map setReplace x)) matrix))
 
+
 ;;;
 ;;;  COUNTING FUNCTION
 ;;;
 
+;;; Count at the matrix level.
+(define (countNonSingletons matrix)
+  (foldl + 0 (map (lambda (x) (if (eq? (checkSingleton x) #f) 1 0)) (apply append matrix))))
+
 ;;; Check is singleton or not.
 (define (checkSingleton set)
   (if (> (length set) 1) #f #t))
+
 
 ;;;
 ;;;  PROVIDER FUNCTION
@@ -45,5 +51,6 @@
 
 ;;; Provides all functions for testing.
 (provide checkSingleton
+         countNonSingletons
          setReplace
          transform)
