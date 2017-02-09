@@ -63,7 +63,7 @@
 
 ;;; Remove the digit from the square.
 (define (removeNumberSquare matrix orRow row orCol column digit)
-  (if (outsideSquare row column)
+  (if (outsideSquare orRow row orCol column)
       matrix
       (list-set (removeNumberSquare (removeNumberSquare matrix row (+ 1 column) digit) (+ 1 row) column digit) (floor (/ row 3))
             (columnFilter (list-ref (removeNumberSquare (removeNumberSquare matrix row (+ 1 column) digit) (+ 1 row) column digit) (floor (/ row 3))) (ceiling (/ column 3)) digit))))
