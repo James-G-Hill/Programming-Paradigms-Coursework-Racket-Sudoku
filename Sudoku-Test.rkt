@@ -134,6 +134,17 @@
 ;(check-equal? (removeNumberSquare transformedPuzzle 2 3 4) transformedPuzzleTopLeftSquare4Removed "Removed digit from square")
 ;(check-equal? (removeNumberSquare transformedPuzzleTopLeftSquare4Removed 2 3 4) transformedPuzzleTopLeftSquare4Removed "Attempted to remove already removed digit from square")
 
+;;; Test 'withinSquare'.
+(check-equal? (outsideSquare 1 1 1 1) #f "Within square")
+(check-equal? (outsideSquare 1 4 1 1) #t "Testing row")
+(check-equal? (outsideSquare 1 1 1 4) #t "Testing column")
+(check-equal? (outsideSquare 4 4 4 4) #f "Within square")
+(check-equal? (outsideSquare 4 7 4 4) #t "Testing row")
+(check-equal? (outsideSquare 4 4 4 7) #t "Testing column")
+(check-equal? (outsideSquare 7 7 7 7) #f "Within square")
+(check-equal? (outsideSquare 7 10 7 7) #t "Testing row")
+(check-equal? (outsideSquare 7 7 7 10) #t "Testing column")
+
 ;;; Test 'reduceSquareRootNumber'.
 (check-equal? (reduceSquareRootNumber 1) 1 "Reduce digit to square root")
 (check-equal? (reduceSquareRootNumber 2) 1 "Reduce digit to square root")
