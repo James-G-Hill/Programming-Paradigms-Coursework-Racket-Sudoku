@@ -44,6 +44,18 @@
   ((1 2 3 4 5 6 7 8 9) (1 2 3 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (7) (8) (1) (1 2 3 4 5 6 7 8 9) (3))
   ((1 2 3 4 5 6 7 8 9) (1 2 3 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (6) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (5) (9) (1 2 3 4 5 6 7 8 9))))
 
+;;; A transformed version of the above matrix.
+(define transformedPuzzleTopLeftSquare4Removed
+  '(((1 2 3 5 6 7 8 9) (2) (5) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9))
+  ((1) (1 2 3 5 6 7 8 9) (4) (2) (5) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9))
+  ((1 2 3 5 6 7 8 9) (1 2 3 5 6 7 8 9) (6) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (4) (2) (1) (1 2 3 4 5 6 7 8 9))
+  ((1 2 3 4 5 6 7 8 9) (5) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (3) (2) (1 2 3 4 5 6 7 8 9))
+  ((6) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (2) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (9))
+  ((1 2 3 4 5 6 7 8 9) (8) (7) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (6) (1 2 3 4 5 6 7 8 9))
+  ((1 2 3 4 5 6 7 8 9) (9) (1) (5) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (6) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9))
+  ((1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (7) (8) (1) (1 2 3 4 5 6 7 8 9) (3))
+  ((1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (6) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (5) (9) (1 2 3 4 5 6 7 8 9))))
+
 ;;; A singleton for testing.
 (define singleton
   (list 1))
@@ -117,3 +129,18 @@
 ;;; Test 'removeNumberColumn'.
 (check-equal? (removeNumberColumn transformedPuzzle 2 4) transformedPuzzle4Removed "Removed digit from column")
 (check-equal? (removeNumberColumn transformedPuzzle4Removed 2 4) transformedPuzzle4Removed "Attempted to remove already removed digit from column")
+
+;;; Test 'removeNumberSquare'.
+;(check-equal? (removeNumberSquare transformedPuzzle 2 3 4) transformedPuzzleTopLeftSquare4Removed "Removed digit from square")
+;(check-equal? (removeNumberSquare transformedPuzzleTopLeftSquare4Removed 2 3 4) transformedPuzzleTopLeftSquare4Removed "Attempted to remove already removed digit from square")
+
+;;; Test 'reduceSquareRootNumber'.
+(check-equal? (reduceSquareRootNumber 1) 1 "Reduce digit to square root")
+(check-equal? (reduceSquareRootNumber 2) 1 "Reduce digit to square root")
+(check-equal? (reduceSquareRootNumber 3) 1 "Reduce digit to square root")
+(check-equal? (reduceSquareRootNumber 4) 4 "Reduce digit to square root")
+(check-equal? (reduceSquareRootNumber 5) 4 "Reduce digit to square root")
+(check-equal? (reduceSquareRootNumber 6) 4 "Reduce digit to square root")
+(check-equal? (reduceSquareRootNumber 7) 7 "Reduce digit to square root")
+(check-equal? (reduceSquareRootNumber 8) 7 "Reduce digit to square root")
+(check-equal? (reduceSquareRootNumber 9) 7 "Reduce digit to square root")
