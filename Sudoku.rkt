@@ -62,11 +62,17 @@
     (list-set row (- column 1) (removeNumber (list-ref row (- column 1)) digit)))
 
 ;;; Remove the digit from the square.
-(define (removeNumberSquare matrix rowNo column digit)
-  (if (or (> (ceiling (/ rowNo 3)) 3) (> (ceiling (/ column 3)) 3))
+(define (removeNumberSquare matrix orRow row orCol column digit)
+  (if (outsideSquare row column)
       matrix
-      (list-set (removeNumberSquare (removeNumberSquare matrix rowNo (+ 1 column) digit) (+ 1 rowNo) column digit) (floor (/ rowNo 3))
-            (columnFilter (list-ref (removeNumberSquare (removeNumberSquare matrix rowNo (+ 1 column) digit) (+ 1 rowNo) column digit) (floor (/ rowNo 3))) (ceiling (/ column 3)) digit))))
+      (list-set (removeNumberSquare (removeNumberSquare matrix row (+ 1 column) digit) (+ 1 row) column digit) (floor (/ row 3))
+            (columnFilter (list-ref (removeNumberSquare (removeNumberSquare matrix row (+ 1 column) digit) (+ 1 row) column digit) (floor (/ row 3))) (ceiling (/ column 3)) digit))))
+
+;;; Check rows and columns still within square.
+(define (outsideSquare orRow row orCol column)
+  (or
+   (> row (+ (reduceSquareRootNumber orRow) 2))
+   (> column (+ (reduceSquareRootNumber orCol) 2))))
 
 ;;; Reduce to square root number.
 (define (reduceSquareRootNumber digit)
@@ -89,6 +95,7 @@
 ;;; Provides all functions for testing.
 (provide checkSingleton
          countNonSingletons
+         outsideSquare
          reduceSquareRootNumber
          removeNumber
          removeNumberColumn
