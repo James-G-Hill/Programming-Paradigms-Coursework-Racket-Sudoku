@@ -62,17 +62,38 @@
     (list-set row (- column 1) (removeNumber (list-ref row (- column 1)) digit)))
 
 ;;; Remove the digit from the square.
-(define (removeNumberSquare matrix orRow row orCol column digit)
-  (if (outsideSquare orRow row orCol column)
-      matrix
-      (list-set (removeNumberSquare (removeNumberSquare matrix row (+ 1 column) digit) (+ 1 row) column digit) (floor (/ row 3))
-            (columnFilter (list-ref (removeNumberSquare (removeNumberSquare matrix row (+ 1 column) digit) (+ 1 row) column digit) (floor (/ row 3))) (ceiling (/ column 3)) digit))))
+(define (removeNumberSquare matrix row col digit)
+  (list
+   (if (not (outsideSquare 1 row)) (updateRow (first matrix) col digit) (first matrix))
+   (if (not (outsideSquare 2 row)) (updateRow (second matrix) col digit) (second matrix))
+   (if (not (outsideSquare 3 row)) (updateRow (third matrix) col digit) (third matrix))
+   (if (not (outsideSquare 4 row)) (updateRow (fourth matrix) col digit) (fourth matrix))
+   (if (not (outsideSquare 5 row)) (updateRow (fifth matrix) col digit) (fifth matrix))
+   (if (not (outsideSquare 6 row)) (updateRow (sixth matrix) col digit) (sixth matrix))
+   (if (not (outsideSquare 7 row)) (updateRow (seventh matrix) col digit) (seventh matrix))
+   (if (not (outsideSquare 8 row)) (updateRow (eighth matrix) col digit) (eighth matrix))
+   (if (not (outsideSquare 9 row)) (updateRow (ninth matrix) col digit) (ninth matrix)))
+  )
+
+;;; Remove the digit from the square.
+(define (updateRow matrix col digit)
+  (list
+   (if (not (outsideSquare 1 col)) (removeNumber (first matrix) digit) (first matrix))
+   (if (not (outsideSquare 2 col)) (removeNumber (second matrix) digit) (second matrix))
+   (if (not (outsideSquare 3 col)) (removeNumber (third matrix) digit) (third matrix))
+   (if (not (outsideSquare 4 col)) (removeNumber (fourth matrix) digit) (fourth matrix))
+   (if (not (outsideSquare 5 col)) (removeNumber (fifth matrix) digit) (fifth matrix))
+   (if (not (outsideSquare 6 col)) (removeNumber (sixth matrix) digit) (sixth matrix))
+   (if (not (outsideSquare 7 col)) (removeNumber (seventh matrix) digit) (seventh matrix))
+   (if (not (outsideSquare 8 col)) (removeNumber (eighth matrix) digit) (eighth matrix))
+   (if (not (outsideSquare 9 col)) (removeNumber (ninth matrix) digit) (ninth matrix)))
+  )
 
 ;;; Check rows and columns still within square.
-(define (outsideSquare orRow row orCol column)
+(define (outsideSquare original current)
   (or
-   (> row (+ (reduceSquareRootNumber orRow) 2))
-   (> column (+ (reduceSquareRootNumber orCol) 2))))
+   (< current (reduceSquareRootNumber original))
+   (> current (+ (reduceSquareRootNumber original) 2))))
 
 ;;; Reduce to square root number.
 (define (reduceSquareRootNumber digit)
