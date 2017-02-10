@@ -49,9 +49,17 @@
 ;;;  MAIN ALGORITHM
 ;;;
 
+
+
+;;; Apply the algorithm.
+(define (applyAlgorithm matrix row col)
+  (let ([digit (list-ref matrix row col)])
+    (removeNumberSquare (removeNumberColumn (removeNumberRow matrix row digit) col digit) row col digit)))
+
 ;;; Remove digit from row.
-(define (removeNumberRow row digit)
-  (map (lambda (x) (removeNumber x digit)) row))
+(define (removeNumberRow matrix row digit)
+  (let ([x (list-ref matrix row)])
+    (list-set matrix row (map (lambda (y) (removeNumber y digit)) x))))
 
 ;;; Remove the digit from column.
 (define (removeNumberColumn matrix column digit)
