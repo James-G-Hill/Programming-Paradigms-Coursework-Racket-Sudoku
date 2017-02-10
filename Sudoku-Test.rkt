@@ -115,6 +115,9 @@
 ;;; Test 'transform'.
 (check-equal? (transform puzzle) transformedPuzzle "Transform a whole puzzle.")
 
+;;; Test 'untransform'.
+(check-equal? (untransform transformedPuzzle) puzzle "Failed to reverse the transformation of a puzzle.") 
+
 ;;;
 ;;;  COUNTING TESTING
 ;;;
