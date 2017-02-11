@@ -95,11 +95,11 @@
 
 ;;; Remove the digit from column.
 (define (removeNumberColumn matrix column digit)
-  (map (lambda (x) (columnFilter x (- column 1) digit)) matrix))
+  (map (lambda (x) (list-set x (- column 1) (removeNumber (list-ref x (- column 1)) digit))) matrix))
 
-;;; Find the column in a row and remove the digit.
-(define (columnFilter row column digit)
-    (list-set row column (removeNumber (list-ref row column) digit)))
+;;; Remove the digit from column set.
+;(define (removeNumberColumnSet matrix column digit)
+;  (map (lambda (x) (list-set x (- column 1) (removeNumber (list-ref x (- column 1)) digit))) matrix))
 
 ;;; Remove the digit from the square.
 (define (removeNumberSquare matrix row col digit)
@@ -160,6 +160,7 @@
          reduceSquareRootNumber
          removeNumber
          removeNumberColumn
+         removeNumberColumnSet
          removeNumberRow
          removeNumberRowSet
          removeNumberSquare
