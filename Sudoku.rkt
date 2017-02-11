@@ -91,11 +91,13 @@
 
 ;;; Create list of non-duplicates from surrounding cells.
 (define (combineNonDupeLists matrix row col)
-  (remove-duplicates
+  (sort (remove-duplicates
    (flatten
     (list
      (returnUniqueListRow matrix row col)
-     (returnUniqueListCol matrix row col)))))
+     (returnUniqueListCol matrix row col)
+     (returnUniqueListSquare matrix row col))))
+        <))
 
 ;;; Remove duplicates from a row.
 (define (returnUniqueListRow matrix row col)
@@ -106,6 +108,10 @@
 (define (returnUniqueListCol matrix row col)
   (let ([C (map (lambda (x) (list-ref x col)) matrix)])
     (remove-duplicates (flatten (append (take C row) (drop C (+ row 1)))))))
+
+;;; Remove duplicates from a square.
+(define (returnUniqueListSquare matrix row col)
+  (remove-duplicates (flatten (returnNumberSquareSet matrix row col))))
 
 ;;; Remove digit from set.
 ;(define (removeNumberRowSet matrix row column digit)
@@ -126,62 +132,56 @@
 ;;; Remove the digit from the square.
 (define (removeNumberSquare matrix row col digit)
   (list
-   (if (not (outsideSquare 1 row)) (updateRow (first matrix) col digit) (first matrix))
-   (if (not (outsideSquare 2 row)) (updateRow (second matrix) col digit) (second matrix))
-   (if (not (outsideSquare 3 row)) (updateRow (third matrix) col digit) (third matrix))
-   (if (not (outsideSquare 4 row)) (updateRow (fourth matrix) col digit) (fourth matrix))
-   (if (not (outsideSquare 5 row)) (updateRow (fifth matrix) col digit) (fifth matrix))
-   (if (not (outsideSquare 6 row)) (updateRow (sixth matrix) col digit) (sixth matrix))
-   (if (not (outsideSquare 7 row)) (updateRow (seventh matrix) col digit) (seventh matrix))
-   (if (not (outsideSquare 8 row)) (updateRow (eighth matrix) col digit) (eighth matrix))
-   (if (not (outsideSquare 9 row)) (updateRow (ninth matrix) col digit) (ninth matrix)))
+   (if (not (outsideSquare 0 row)) (updateRow (first matrix) col digit) (first matrix))
+   (if (not (outsideSquare 1 row)) (updateRow (second matrix) col digit) (second matrix))
+   (if (not (outsideSquare 2 row)) (updateRow (third matrix) col digit) (third matrix))
+   (if (not (outsideSquare 3 row)) (updateRow (fourth matrix) col digit) (fourth matrix))
+   (if (not (outsideSquare 4 row)) (updateRow (fifth matrix) col digit) (fifth matrix))
+   (if (not (outsideSquare 5 row)) (updateRow (sixth matrix) col digit) (sixth matrix))
+   (if (not (outsideSquare 6 row)) (updateRow (seventh matrix) col digit) (seventh matrix))
+   (if (not (outsideSquare 7 row)) (updateRow (eighth matrix) col digit) (eighth matrix))
+   (if (not (outsideSquare 8 row)) (updateRow (ninth matrix) col digit) (ninth matrix)))
   )
 
 ;;; Remove the digit from the square.
 (define (updateRow matrix col digit)
   (list
-   (if (not (outsideSquare 1 col)) (removeNumber (first matrix) digit) (first matrix))
-   (if (not (outsideSquare 2 col)) (removeNumber (second matrix) digit) (second matrix))
-   (if (not (outsideSquare 3 col)) (removeNumber (third matrix) digit) (third matrix))
-   (if (not (outsideSquare 4 col)) (removeNumber (fourth matrix) digit) (fourth matrix))
-   (if (not (outsideSquare 5 col)) (removeNumber (fifth matrix) digit) (fifth matrix))
-   (if (not (outsideSquare 6 col)) (removeNumber (sixth matrix) digit) (sixth matrix))
-   (if (not (outsideSquare 7 col)) (removeNumber (seventh matrix) digit) (seventh matrix))
-   (if (not (outsideSquare 8 col)) (removeNumber (eighth matrix) digit) (eighth matrix))
-   (if (not (outsideSquare 9 col)) (removeNumber (ninth matrix) digit) (ninth matrix)))
+   (if (not (outsideSquare 0 col)) (removeNumber (first matrix) digit) (first matrix))
+   (if (not (outsideSquare 1 col)) (removeNumber (second matrix) digit) (second matrix))
+   (if (not (outsideSquare 2 col)) (removeNumber (third matrix) digit) (third matrix))
+   (if (not (outsideSquare 3 col)) (removeNumber (fourth matrix) digit) (fourth matrix))
+   (if (not (outsideSquare 4 col)) (removeNumber (fifth matrix) digit) (fifth matrix))
+   (if (not (outsideSquare 5 col)) (removeNumber (sixth matrix) digit) (sixth matrix))
+   (if (not (outsideSquare 6 col)) (removeNumber (seventh matrix) digit) (seventh matrix))
+   (if (not (outsideSquare 7 col)) (removeNumber (eighth matrix) digit) (eighth matrix))
+   (if (not (outsideSquare 8 col)) (removeNumber (ninth matrix) digit) (ninth matrix)))
   )
 
-;;; Remove the digit from the square.
-;(define (removeNumberSquareSet matrix row col digit)
-;  (if (>
-;       (apply +
-;              (list
-;               (if (not (outsideSquare 1 row)) (updateRowSet (first matrix) (outsideSquare 1 row) col digit) 0)
-;               (if (not (outsideSquare 2 row)) (updateRowSet (second matrix) (outsideSquare 2 row) col digit) 0)
-;               (if (not (outsideSquare 3 row)) (updateRowSet (third matrix) (outsideSquare 3 row) col digit) 0)
-;               (if (not (outsideSquare 4 row)) (updateRowSet (fourth matrix) (outsideSquare 4 row) col digit) 0)
-;               (if (not (outsideSquare 5 row)) (updateRowSet (fifth matrix) (outsideSquare 5 row) col digit) 0)
-;               (if (not (outsideSquare 6 row)) (updateRowSet (sixth matrix) (outsideSquare 6 row) col digit) 0)
-;               (if (not (outsideSquare 7 row)) (updateRowSet (seventh matrix) (outsideSquare 7 row) col digit) 0)
-;               (if (not (outsideSquare 8 row)) (updateRowSet (eighth matrix) (outsideSquare 8 row) col digit) 0)
-;               (if (not (outsideSquare 9 row)) (updateRowSet (ninth matrix) (outsideSquare 9 row) col digit) 0))
-;              )
-;       1) matrix (list-set matrix row (list-set (list-ref matrix row) col (list digit)))))
+;;; Return a list of numbers from an internal square.
+(define (returnNumberSquareSet matrix row col)
+  (list
+   (if (not (outsideSquare 0 row)) (returnRowSquare (first matrix) (= 0 row) col) '())
+   (if (not (outsideSquare 1 row)) (returnRowSquare (second matrix) (= 1 row) col) '())
+   (if (not (outsideSquare 2 row)) (returnRowSquare (third matrix) (= 2 row) col) '())
+   (if (not (outsideSquare 3 row)) (returnRowSquare (fourth matrix) (= 3 row) col) '())
+   (if (not (outsideSquare 4 row)) (returnRowSquare (fifth matrix) (= 4 row) col) '())
+   (if (not (outsideSquare 5 row)) (returnRowSquare (sixth matrix) (= 5 row) col) '())
+   (if (not (outsideSquare 6 row)) (returnRowSquare (seventh matrix) (= 6 row) col) '())
+   (if (not (outsideSquare 7 row)) (returnRowSquare (eighth matrix) (= 7 row) col) '())
+   (if (not (outsideSquare 8 row)) (returnRowSquare (ninth matrix) (= 8 row) col) '())))
 
-;;; Remove the digit from the square.
-;(define (updateRowSet matrix row col digit)
-;  (apply +
-;         (list
-;          (if (and row (not (outsideSquare 1 col))) (if (member digit (first matrix)) 1 0) 0)
-;          (if (and row (not (outsideSquare 2 col))) (if (member digit (second matrix)) 1 0) 0)
-;          (if (and row (not (outsideSquare 3 col))) (if (member digit (third matrix)) 1 0) 0)
-;          (if (and row (not (outsideSquare 4 col))) (if (member digit (fourth matrix)) 1 0) 0)
-;          (if (and row (not (outsideSquare 5 col))) (if (member digit (fifth matrix)) 1 0) 0)
-;          (if (and row (not (outsideSquare 6 col))) (if (member digit (sixth matrix)) 1 0) 0)
-;          (if (and row (not (outsideSquare 7 col))) (if (member digit (seventh matrix)) 1 0) 0)
-;          (if (and row (not (outsideSquare 8 col))) (if (member digit (eighth matrix)) 1 0) 0)
-;          (if (and row (not (outsideSquare 9 col))) (if (member digit (ninth matrix)) 1 0) 0))
-;         ))
+;;; Return a list of numbers from a row.
+(define (returnRowSquare matrix row col)
+  (list
+   (if (not (outsideSquare 0 col)) (if (and row (= col 0)) '() (first matrix)) '())
+   (if (not (outsideSquare 1 col)) (if (and row (= col 1)) '() (second matrix))'())
+   (if (not (outsideSquare 2 col)) (if (and row (= col 2)) '() (third matrix)) '())
+   (if (not (outsideSquare 3 col)) (if (and row (= col 3)) '() (fourth matrix)) '())
+   (if (not (outsideSquare 4 col)) (if (and row (= col 4)) '() (fifth matrix)) '())
+   (if (not (outsideSquare 5 col)) (if (and row (= col 5)) '() (sixth matrix)) '())
+   (if (not (outsideSquare 6 col)) (if (and row (= col 6)) '() (seventh matrix)) '())
+   (if (not (outsideSquare 7 col)) (if (and row (= col 7)) '() (eighth matrix)) '())
+   (if (not (outsideSquare 8 col)) (if (and row (= col 8)) '() (ninth matrix)) '())))
 
 ;;; Check rows and columns still within square.
 (define (outsideSquare original current)
@@ -192,9 +192,9 @@
 ;;; Reduce to square root number.
 (define (reduceSquareRootNumber digit)
   (cond
-    [(< digit 4) 1]
-    [(< digit 7) 4]
-    [(< digit 10) 7]))
+    [(< digit 3) 1]
+    [(< digit 6) 4]
+    [(< digit 9) 7]))
 
 ;;; Remove number from set.
 (define (removeNumber set digit)
@@ -209,6 +209,7 @@
 
 ;;; Provides all functions for testing.
 (provide checkSingleton
+         combineNonDupeLists
          countNonSingletons
          outsideSquare
          reduceSquareRootNumber
@@ -221,6 +222,7 @@
 ;         removeNumberSquareSet
          returnUniqueListCol
          returnUniqueListRow
+         returnUniqueListSquare
          setReplace
          transform
          untransform)
