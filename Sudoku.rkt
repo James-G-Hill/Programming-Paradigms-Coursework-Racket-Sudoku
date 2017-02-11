@@ -74,20 +74,14 @@
 
 ;;; Apply the algorithm.
 (define (applyAlgorithm matrix row col)
-  (let ([digit (list-ref (list-ref matrix row) col)])
+  (let ([digit (list-ref (list-ref matrix (- row 1)) (- col 1))])
     (if (checkSingleton digit)
-        (removeNumberSquareSet
-         (removeNumberColumnSet
-          (removeNumberRowSet
-           (removeNumberSquare
-            (removeNumberColumn
-             (removeNumberRow
-              matrix row (first digit))
-             col (first digit))
-            row col (first digit))
-           col row (first digit))
-          row col (first digit))
-         row col (first digit))
+        (removeNumberSquare
+         (removeNumberColumn
+          (removeNumberRow
+           matrix (- row 1) (first digit))
+          (- col 1) (first digit))
+         (- row 1) (- col 1) (first digit))
         matrix)))
 
 ;;; Remove digit from row.
@@ -95,21 +89,26 @@
   (let ([x (list-ref matrix row)])
     (list-set matrix row (map (lambda (y) (removeNumber y digit)) x))))
 
-;;; Remove digit from set.
-(define (removeNumberRowSet matrix row column digit)
+;;; Remove duplicates from a row.
+(define (returnUniqueListRow matrix row col)
   (let ([x (list-ref matrix row)])
-    (list-set matrix row (if (> (foldl + 0 (map (lambda (y) (if (member digit y) 1 0)) x)) 1) x (list-set x (- column 1) (list digit))))))
+    (remove-duplicates (flatten (append (take x col) (drop x (+ col 1)))))))
+
+;;; Remove digit from set.
+;(define (removeNumberRowSet matrix row column digit)
+;  (let ([x (list-ref matrix row)])
+;    (list-set matrix row (if (> (foldl + 0 (map (lambda (y) (if (member digit y) 1 0)) x)) 1) x (list-set x column (list digit))))))
 
 ;;; Remove the digit from column.
 (define (removeNumberColumn matrix column digit)
-  (map (lambda (x) (list-set x (- column 1) (removeNumber (list-ref x (- column 1)) digit))) matrix))
+  (map (lambda (x) (list-set x column (removeNumber (list-ref x column) digit))) matrix))
 
 ;;; Remove the digit from column set.
-(define (removeNumberColumnSet matrix row column digit)
-  (let ([R (list-ref matrix (- row 1))])
-    (if (> (foldl + 0 (map (lambda (x) (if (member digit (list-ref x (- column 1))) 1 0)) matrix)) 1)
-        matrix
-        (list-set matrix (- row 1) (list-set R (- column 1) (list digit))))))
+;(define (removeNumberColumnSet matrix row column digit)
+;  (let ([R (list-ref matrix row)])
+;    (if (> (foldl + 0 (map (lambda (x) (if (member digit (list-ref x column)) 1 0)) matrix)) 1)
+;        matrix
+;        (list-set matrix row (list-set R column (list digit))))))
 
 ;;; Remove the digit from the square.
 (define (removeNumberSquare matrix row col digit)
@@ -139,39 +138,37 @@
    (if (not (outsideSquare 9 col)) (removeNumber (ninth matrix) digit) (ninth matrix)))
   )
 
+;;; Remove the digit from the square.
+;(define (removeNumberSquareSet matrix row col digit)
+;  (if (>
+;       (apply +
+;              (list
+;               (if (not (outsideSquare 1 row)) (updateRowSet (first matrix) (outsideSquare 1 row) col digit) 0)
+;               (if (not (outsideSquare 2 row)) (updateRowSet (second matrix) (outsideSquare 2 row) col digit) 0)
+;               (if (not (outsideSquare 3 row)) (updateRowSet (third matrix) (outsideSquare 3 row) col digit) 0)
+;               (if (not (outsideSquare 4 row)) (updateRowSet (fourth matrix) (outsideSquare 4 row) col digit) 0)
+;               (if (not (outsideSquare 5 row)) (updateRowSet (fifth matrix) (outsideSquare 5 row) col digit) 0)
+;               (if (not (outsideSquare 6 row)) (updateRowSet (sixth matrix) (outsideSquare 6 row) col digit) 0)
+;               (if (not (outsideSquare 7 row)) (updateRowSet (seventh matrix) (outsideSquare 7 row) col digit) 0)
+;               (if (not (outsideSquare 8 row)) (updateRowSet (eighth matrix) (outsideSquare 8 row) col digit) 0)
+;               (if (not (outsideSquare 9 row)) (updateRowSet (ninth matrix) (outsideSquare 9 row) col digit) 0))
+;              )
+;       1) matrix (list-set matrix row (list-set (list-ref matrix row) col (list digit)))))
 
 ;;; Remove the digit from the square.
-(define (removeNumberSquareSet matrix row col digit)
-  (if (>
-       (apply +
-              (list
-               (if (not (outsideSquare 1 row)) (updateRowSet (first matrix) (if (= row 1) #t #f) col digit) 0)
-               (if (not (outsideSquare 2 row)) (updateRowSet (second matrix) (if (= row 2) #t #f) col digit) 0)
-               (if (not (outsideSquare 3 row)) (updateRowSet (third matrix) (if (= row 3) #t #f) col digit) 0)
-               (if (not (outsideSquare 4 row)) (updateRowSet (fourth matrix) (if (= row 4) #t #f) col digit) 0)
-               (if (not (outsideSquare 5 row)) (updateRowSet (fifth matrix) (if (= row 5) #t #f) col digit) 0)
-               (if (not (outsideSquare 6 row)) (updateRowSet (sixth matrix) (if (= row 6) #t #f) col digit) 0)
-               (if (not (outsideSquare 7 row)) (updateRowSet (seventh matrix) (if (= row 7) #t #f) col digit) 0)
-               (if (not (outsideSquare 8 row)) (updateRowSet (eighth matrix) (if (= row 8) #t #f) col digit) 0)
-               (if (not (outsideSquare 9 row)) (updateRowSet (ninth matrix) (if (= row 9) #t #f) col digit) 0))
-              )
-       1) matrix (list-set matrix (- row 1) (list-set (list-ref matrix (- row 1)) (- col 1) (list digit)))))
-
-;;; Remove the digit from the square.
-(define (updateRowSet matrix row col digit)
-  (apply +
-         (list
-          (if (and row (not (outsideSquare 1 col))) (if (member digit (first matrix)) 1 0) 0)
-          (if (and row (not (outsideSquare 2 col))) (if (member digit (second matrix)) 1 0) 0)
-          (if (and row (not (outsideSquare 3 col))) (if (member digit (third matrix)) 1 0) 0)
-          (if (and row (not (outsideSquare 4 col))) (if (member digit (fourth matrix)) 1 0) 0)
-          (if (and row (not (outsideSquare 5 col))) (if (member digit (fifth matrix)) 1 0) 0)
-          (if (and row (not (outsideSquare 6 col))) (if (member digit (sixth matrix)) 1 0) 0)
-          (if (and row (not (outsideSquare 7 col))) (if (member digit (seventh matrix)) 1 0) 0)
-          (if (and row (not (outsideSquare 8 col))) (if (member digit (eighth matrix)) 1 0) 0)
-          (if (and row (not (outsideSquare 9 col))) (if (member digit (ninth matrix)) 1 0) 0))
-         ))
-
+;(define (updateRowSet matrix row col digit)
+;  (apply +
+;         (list
+;          (if (and row (not (outsideSquare 1 col))) (if (member digit (first matrix)) 1 0) 0)
+;          (if (and row (not (outsideSquare 2 col))) (if (member digit (second matrix)) 1 0) 0)
+;          (if (and row (not (outsideSquare 3 col))) (if (member digit (third matrix)) 1 0) 0)
+;          (if (and row (not (outsideSquare 4 col))) (if (member digit (fourth matrix)) 1 0) 0)
+;          (if (and row (not (outsideSquare 5 col))) (if (member digit (fifth matrix)) 1 0) 0)
+;          (if (and row (not (outsideSquare 6 col))) (if (member digit (sixth matrix)) 1 0) 0)
+;          (if (and row (not (outsideSquare 7 col))) (if (member digit (seventh matrix)) 1 0) 0)
+;          (if (and row (not (outsideSquare 8 col))) (if (member digit (eighth matrix)) 1 0) 0)
+;          (if (and row (not (outsideSquare 9 col))) (if (member digit (ninth matrix)) 1 0) 0))
+;         ))
 
 ;;; Check rows and columns still within square.
 (define (outsideSquare original current)
@@ -204,11 +201,12 @@
          reduceSquareRootNumber
          removeNumber
          removeNumberColumn
-         removeNumberColumnSet
+;         removeNumberColumnSet
          removeNumberRow
-         removeNumberRowSet
+;         removeNumberRowSet
          removeNumberSquare
-         removeNumberSquareSet
+;         removeNumberSquareSet
+         returnUniqueListRow
          setReplace
          transform
          untransform)
