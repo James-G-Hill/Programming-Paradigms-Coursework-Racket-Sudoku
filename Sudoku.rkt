@@ -27,10 +27,17 @@
       (list 1 2 3 4 5 6 7 8 9)
       (list digit)))
 
+;;;
+(define (unReplace list)
+  (if (> (length list) 1) 0 (list-ref (flatten list) 0)))
+
 ;;; Transforms the matrix into a list of lists of sets.
 (define (transform matrix)
   (map (lambda (x) (map setReplace x)) matrix))
 
+;;;
+(define (untransform matrix)
+  (map (lambda (x) (map unReplace x)) matrix))
 
 ;;;
 ;;;  COUNTING FUNCTION
@@ -44,30 +51,55 @@
 (define (checkSingleton set)
   (if (> (length set) 1) #f #t))
 
+;;;
+;;;  THE SOLVER
+;;;
+
+;;; The solve function.
+(define (solve matrix)
+  (if (< (countNonSingletons (transform matrix)) 41)
+      matrix
+      (solve (untransform (loopMatrix (transform matrix) 0 0)))))
 
 ;;;
 ;;;  MAIN ALGORITHM
 ;;;
 
-
+;;; Loop through the matrix applying the algorithm.
+(define (loopMatrix matrix r c)
+  (if (< c 8)
+      (loopMatrix (applyAlgorithm matrix r c) r (+ c 1))
+      (if (< r 8)
+          (loopMatrix (applyAlgorithm matrix r 0) (+ r 1) 0) matrix)))
 
 ;;; Apply the algorithm.
 (define (applyAlgorithm matrix row col)
-  (let ([digit (list-ref matrix row col)])
-    (removeNumberSquare (removeNumberColumn (removeNumberRow matrix row digit) col digit) row col digit)))
+  (let ([digit (list-ref (list-ref matrix row) col)])
+    (if (checkSingleton digit)
+        (removeNumberSquare
+         (removeNumberColumn
+          (removeNumberRow matrix row (first digit))
+          col (first digit))
+         row col (first digit))
+        matrix)))
 
 ;;; Remove digit from row.
 (define (removeNumberRow matrix row digit)
   (let ([x (list-ref matrix row)])
     (list-set matrix row (map (lambda (y) (removeNumber y digit)) x))))
 
+;;; Remove digit from set.
+(define (removeNumberRowSet matrix row column digit)
+  (let ([x (list-ref matrix row)])
+    (list-set matrix row (if (> (foldl + 0 (map (lambda (y) (if (member digit y) 1 0)) x)) 1) x (list-set x (- column 1) (list digit))))))
+
 ;;; Remove the digit from column.
 (define (removeNumberColumn matrix column digit)
-  (map (lambda (x) (columnFilter x column digit)) matrix))
+  (map (lambda (x) (columnFilter x (- column 1) digit)) matrix))
 
 ;;; Find the column in a row and remove the digit.
 (define (columnFilter row column digit)
-    (list-set row (- column 1) (removeNumber (list-ref row (- column 1)) digit)))
+    (list-set row column (removeNumber (list-ref row column) digit)))
 
 ;;; Remove the digit from the square.
 (define (removeNumberSquare matrix row col digit)
@@ -129,6 +161,8 @@
          removeNumber
          removeNumberColumn
          removeNumberRow
+         removeNumberRowSet
          removeNumberSquare
          setReplace
-         transform)
+         transform
+         untransform)
