@@ -89,10 +89,23 @@
   (let ([x (list-ref matrix row)])
     (list-set matrix row (map (lambda (y) (removeNumber y digit)) x))))
 
+;;; Create list of non-duplicates from surrounding cells.
+(define (combineNonDupeLists matrix row col)
+  (remove-duplicates
+   (flatten
+    (list
+     (returnUniqueListRow matrix row col)
+     (returnUniqueListCol matrix row col)))))
+
 ;;; Remove duplicates from a row.
 (define (returnUniqueListRow matrix row col)
   (let ([x (list-ref matrix row)])
     (remove-duplicates (flatten (append (take x col) (drop x (+ col 1)))))))
+
+;;; Remove duplicates from a column.
+(define (returnUniqueListCol matrix row col)
+  (let ([C (map (lambda (x) (list-ref x col)) matrix)])
+    (remove-duplicates (flatten (append (take C row) (drop C (+ row 1)))))))
 
 ;;; Remove digit from set.
 ;(define (removeNumberRowSet matrix row column digit)
@@ -206,6 +219,7 @@
 ;         removeNumberRowSet
          removeNumberSquare
 ;         removeNumberSquareSet
+         returnUniqueListCol
          returnUniqueListRow
          setReplace
          transform
