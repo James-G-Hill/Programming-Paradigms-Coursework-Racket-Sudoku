@@ -33,6 +33,18 @@
   ((1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (6) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (5) (9) (1 2 3 4 5 6 7 8 9))))
 
 ;;; A transformed version of the above matrix with the first row changed for testing reducing a set.
+(define transformedPuzzleRow4Removed
+  '(((1 2 3 5 6 7 8 9) (2) (5) (1 2 3 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1) (1 2 3 5 6 7 8 9) (1 2 3 5 6 7 8 9) (1 2 3 5 6 7 8 9))
+  ((1) (1 2 3 4 5 6 7 8 9) (4) (2) (5) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9))
+  ((1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (6) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (4) (2) (1) (1 2 3 4 5 6 7 8 9))
+  ((1 2 3 4 5 6 7 8 9) (5) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (3) (2) (1 2 3 4 5 6 7 8 9))
+  ((6) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (2) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (9))
+  ((1 2 3 4 5 6 7 8 9) (8) (7) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (6) (1 2 3 4 5 6 7 8 9))
+  ((1 2 3 4 5 6 7 8 9) (9) (1) (5) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (6) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9))
+  ((1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (7) (8) (1) (1 2 3 4 5 6 7 8 9) (3))
+  ((1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (6) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (5) (9) (1 2 3 4 5 6 7 8 9))))
+
+;;; A transformed version of the above matrix with the first row changed for testing reducing a set.
 (define transformedPuzzleRowSet
   '(((1 2 3 5 6 7 8 9) (2) (5) (1 2 3 4 5 6 7 8 9) (1 2 3 5 6 7 8 9) (1) (1 2 3 5 6 7 8 9) (1 2 3 5 6 7 8 9) (1 2 3 5 6 7 8 9))
   ((1) (1 2 3 4 5 6 7 8 9) (4) (2) (5) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9))
@@ -214,24 +226,27 @@
 (check-equal? (removeNumberRow transformedPuzzleRowAmended 0 5) transformedPuzzleRowAmended "Attempt to remove a digit from all sets in a row")
 
 ;;; Test 'removeNumberRowSet'.
-(check-equal? (removeNumberRowSet transformedPuzzleRowSet 0 4 4) transformedPuzzleRowSetAmended "Remove a digit from all sets in a row")
-(check-equal? (removeNumberRowSet transformedPuzzleRowSetAmended 0 4 4) transformedPuzzleRowSetAmended "Attempt to remove a digit from all sets in a row")
+;(check-equal? (removeNumberRowSet transformedPuzzleRowSet 0 3 4) transformedPuzzleRowSetAmended "Remove a digit from all sets in a row")
+;(check-equal? (removeNumberRowSet transformedPuzzleRowSetAmended 0 3 4) transformedPuzzleRowSetAmended "Attempt to remove a digit from all sets in a row")
 
 ;;; Test 'removeNumberColumn'.
-(check-equal? (removeNumberColumn transformedPuzzle 2 4) transformedPuzzle4Removed "Removed digit from column")
-(check-equal? (removeNumberColumn transformedPuzzle4Removed 2 4) transformedPuzzle4Removed "Attempted to remove already removed digit from column")
+(check-equal? (removeNumberColumn transformedPuzzle 1 4) transformedPuzzle4Removed "Removed digit from column")
+(check-equal? (removeNumberColumn transformedPuzzle4Removed 1 4) transformedPuzzle4Removed "Attempted to remove already removed digit from column")
 
 ;;; Test 'removeNumberColumnSet'.
-(check-equal? (removeNumberColumnSet transformedPuzzleColSet 3 2 6) transformedPuzzleColSetAmended "Removed digit from column")
-(check-equal? (removeNumberColumnSet transformedPuzzleColSetAmended 3 2 6) transformedPuzzleColSetAmended "Attempted to remove already removed digit from column")
+;(check-equal? (removeNumberColumnSet transformedPuzzleColSet 2 1 6) transformedPuzzleColSetAmended "Removed digit from column")
+;(check-equal? (removeNumberColumnSet transformedPuzzleColSetAmended 2 1 6) transformedPuzzleColSetAmended "Attempted to remove already removed digit from column")
 
 ;;; Test 'removeNumberSquare'.
 (check-equal? (removeNumberSquare transformedPuzzle 2 3 4) transformedPuzzleTopLeftSquare4Removed "Removed digit from square")
 (check-equal? (removeNumberSquare transformedPuzzleTopLeftSquare4Removed 2 3 4) transformedPuzzleTopLeftSquare4Removed "Attempted to remove already removed digit from square")
 
 ;;; Test 'removeNumberSquareSet'.
-(check-equal? (removeNumberSquareSet transformedPuzzleSquareSet 2 2 7) transformedPuzzleSquareSetAmended "Removed digit from square")
-(check-equal? (removeNumberSquareSet transformedPuzzleSquareSetAmended 2 2 7) transformedPuzzleSquareSetAmended "Attempted to remove already removed digit from square")
+;(check-equal? (removeNumberSquareSet transformedPuzzleSquareSet 1 1 7) transformedPuzzleSquareSetAmended "Removed digit from square")
+;(check-equal? (removeNumberSquareSet transformedPuzzleSquareSetAmended 1 1 7) transformedPuzzleSquareSetAmended "Attempted to remove already removed digit from square")
+
+;;; Test whether a unique list is returned.
+(check-equal? (returnUniqueListRow transformedPuzzleRow4Removed 0 4) (list 1 2 3 5 6 7 8 9) "Should return unique list with 4 removed.")
 
 ;;; Test 'withinSquare'.
 (check-equal? (outsideSquare 1 1) #f "Within square")
