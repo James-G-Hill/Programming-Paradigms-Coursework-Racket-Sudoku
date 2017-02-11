@@ -98,8 +98,11 @@
   (map (lambda (x) (list-set x (- column 1) (removeNumber (list-ref x (- column 1)) digit))) matrix))
 
 ;;; Remove the digit from column set.
-;(define (removeNumberColumnSet matrix column digit)
-;  (map (lambda (x) (list-set x (- column 1) (removeNumber (list-ref x (- column 1)) digit))) matrix))
+(define (removeNumberColumnSet matrix row column digit)
+  (let ([R (list-ref matrix (- row 1))])
+    (if (> (foldl + 0 (map (lambda (x) (if (member digit (list-ref x (- column 1))) 1 0)) matrix)) 1)
+        matrix
+        (list-set matrix (- row 1) (list-set R (- column 1) (list digit))))))
 
 ;;; Remove the digit from the square.
 (define (removeNumberSquare matrix row col digit)
