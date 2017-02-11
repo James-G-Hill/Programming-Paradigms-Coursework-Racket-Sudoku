@@ -226,8 +226,8 @@
 ;(check-equal? (removeNumberColumnSet transformedPuzzleColSetAmended 2 1 6) transformedPuzzleColSetAmended "Attempted to remove already removed digit from column")
 
 ;;; Test 'removeNumberSquare'.
-(check-equal? (removeNumberSquare transformedPuzzle 2 3 4) transformedPuzzleTopLeftSquare4Removed "Removed digit from square")
-(check-equal? (removeNumberSquare transformedPuzzleTopLeftSquare4Removed 2 3 4) transformedPuzzleTopLeftSquare4Removed "Attempted to remove already removed digit from square")
+(check-equal? (removeNumberSquare transformedPuzzle 1 2 4) transformedPuzzleTopLeftSquare4Removed "Removed digit from square")
+(check-equal? (removeNumberSquare transformedPuzzleTopLeftSquare4Removed 1 2 4) transformedPuzzleTopLeftSquare4Removed "Attempted to remove already removed digit from square")
 
 ;;; Test 'removeNumberSquareSet'.
 ;(check-equal? (removeNumberSquareSet transformedPuzzleSquareSet 1 1 7) transformedPuzzleSquareSetAmended "Removed digit from square")
@@ -263,6 +263,36 @@
 ;;; Test whether a unique list is returned from column.
 (check-equal? (returnUniqueListCol transformedPuzzleCol5Removed 3 0) (list 1 2 3 4 6 7 8 9) "Should return unique list with 5 removed.")
 
+;;; A transformed version of the above matrix.
+(define transformedPuzzleSquare9Removed
+  '(((1 2 3 4 5 6 7 8) (2) (5) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9))
+  ((1) (1 2 3 4 5 6 7 8) (4) (2) (5) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9))
+  ((1 2 3 4 5 6 7 8) (1 2 3 4 5 6 7 8 9) (6) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (4) (2) (1) (1 2 3 4 5 6 7 8 9))
+  ((1 2 3 4 5 6 7 8 9) (5) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (3) (2) (1 2 3 4 5 6 7 8 9))
+  ((6) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (2) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (9))
+  ((1 2 3 4 5 6 7 8 9) (8) (7) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (6) (1 2 3 4 5 6 7 8 9))
+  ((1 2 3 4 5 6 7 8 9) (9) (1) (5) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (6) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9))
+  ((1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (7) (8) (1) (1 2 3 4 5 6 7 8 9) (3))
+  ((1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (6) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (5) (9) (1 2 3 4 5 6 7 8 9))))
+
+;;; Test whether a unique list is returned from square.
+(check-equal? (returnUniqueListSquare transformedPuzzleSquare9Removed 2 1) (list 1 2 3 4 5 6 7 8) "Should return unique list with 9 removed.")
+
+;;; A transformed version of the above matrix.
+(define transformedPuzzleCombinedRemove
+  '(((1 2 3 4 5 6 7 8 9) (2) (5) (1 2 3 4 5 6 8 9) (1 2 3 4 5 6 8 9) (1) (1 2 3 4 5 6 8 9) (1 2 3 4 5 6 8 9) (1 2 3 4 5 6 8 9))
+  ((1) (1 2 3 4 5 6 8 9) (4) (2) (5) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9))
+  ((1 2 3 4 5 6 8 9) (1 2 3 4 5 6 8 9) (6) (1 2 3 4 5 6 8 9) (1 2 3 4 5 6 7 8 9) (4) (2) (1) (1 2 3 4 5 6 7 8 9))
+  ((1 2 3 4 5 6 8 9) (5) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (3) (2) (1 2 3 4 5 6 7 8 9))
+  ((6) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (2) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (9))
+  ((1 2 3 4 5 6 8 9) (8) (7) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (6) (1 2 3 4 5 6 7 8 9))
+  ((1 2 3 4 5 6 8 9) (9) (1) (5) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (6) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9))
+  ((1 2 3 4 5 6 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (7) (8) (1) (1 2 3 4 5 6 7 8 9) (3))
+  ((1 2 3 4 5 6 8 9) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (6) (1 2 3 4 5 6 7 8 9) (1 2 3 4 5 6 7 8 9) (5) (9) (1 2 3 4 5 6 7 8 9))))
+
+;;; Test that a list of non duplicates is combined correctly.
+(check-equal? (combineNonDupeLists transformedPuzzleCombinedRemove 0 0) (list 1 2 3 4 5 6 8 9) "Should return unique list with 7 removed.")
+
 ;;; Test 'withinSquare'.
 (check-equal? (outsideSquare 1 1) #f "Within square")
 (check-equal? (outsideSquare 1 4) #t "Testing row")
@@ -272,12 +302,12 @@
 (check-equal? (outsideSquare 7 10) #t "Testing row")
 
 ;;; Test 'reduceSquareRootNumber'.
+(check-equal? (reduceSquareRootNumber 0) 1 "Reduce digit to square root")
 (check-equal? (reduceSquareRootNumber 1) 1 "Reduce digit to square root")
 (check-equal? (reduceSquareRootNumber 2) 1 "Reduce digit to square root")
-(check-equal? (reduceSquareRootNumber 3) 1 "Reduce digit to square root")
+(check-equal? (reduceSquareRootNumber 3) 4 "Reduce digit to square root")
 (check-equal? (reduceSquareRootNumber 4) 4 "Reduce digit to square root")
 (check-equal? (reduceSquareRootNumber 5) 4 "Reduce digit to square root")
-(check-equal? (reduceSquareRootNumber 6) 4 "Reduce digit to square root")
+(check-equal? (reduceSquareRootNumber 6) 7 "Reduce digit to square root")
 (check-equal? (reduceSquareRootNumber 7) 7 "Reduce digit to square root")
 (check-equal? (reduceSquareRootNumber 8) 7 "Reduce digit to square root")
-(check-equal? (reduceSquareRootNumber 9) 7 "Reduce digit to square root")
