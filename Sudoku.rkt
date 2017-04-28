@@ -22,20 +22,30 @@
 ;;;
 
 ;;; Replaces digit 0 with set (1-9) or digit 1-9 with the digit.
+;;; Returns a list.
 (define (setReplace digit)
   (if (= 0 digit)
       (list 1 2 3 4 5 6 7 8 9)
-      (list digit)))
+      (list digit)
+      )
+  )
 
-;;;
+;;; Replaces the list with a flattened list.
+;;; Returns either a '0' or a number for that Sudoku cell.
 (define (unReplace list)
-  (if (> (length list) 1) 0 (list-ref (flatten list) 0)))
+  (if (> (length list) 1)
+      0
+      (list-ref (flatten list) 0)
+      )
+  )
 
 ;;; Transforms the matrix into a list of lists of sets.
+;;; Returns a matrix.
 (define (transform matrix)
   (map (lambda (x) (map setReplace x)) matrix))
 
-;;;
+;;; Returns the matrix back to standard form.
+;;; Returns a matrix.
 (define (untransform matrix)
   (map (lambda (x) (map unReplace x)) matrix))
 
@@ -44,164 +54,237 @@
 ;;;
 
 ;;; Count at the matrix level.
+;;; Returns an integer.
 (define (countNonSingletons matrix)
   (foldl + 0 (map (lambda (x) (if (eq? (checkSingleton x) #f) 1 0)) (apply append matrix))))
 
 ;;; Check is singleton or not.
+;;; Returns a boolean.
 (define (checkSingleton set)
-  (if (> (length set) 1) #f #t))
+  (if (= (length set) 1)
+      #t
+      #f
+      )
+  )
 
 ;;;
 ;;;  THE SOLVER
 ;;;
 
 ;;; The solve function.
+;;; Returns a matrix.
 (define (solve matrix)
-  (if (< (countNonSingletons (transform matrix)) 50)
-      matrix
-      (solve (untransform (loopMatrix (transform matrix) 1 1)))))
+  (untransform (loopMatrix (transform matrix) 0 0))
+  )
 
 ;;;
 ;;;  MAIN ALGORITHM
 ;;;
 
 ;;; Loop through the matrix applying the algorithm.
+;;; Returns a matrix.
 (define (loopMatrix matrix r c)
-  (if (< c 8)
-      (loopMatrix (applyAlgorithm matrix r c) r (+ c 1))
-      (if (< r 8)
-          (loopMatrix (applyAlgorithm matrix r 1) (+ r 1) 1) matrix)))
+  (if (< (countNonSingletons matrix) 1)
+      matrix
+      (if (< c 9)
+          (loopMatrix (applyAlgorithm matrix r c) r (+ c 1))
+          (if (< r 8)
+              (loopMatrix matrix (+ r 1) 0)
+              (loopMatrix matrix 0 0)
+              )
+          )
+      )
+  )
 
 ;;; Apply the algorithm.
 (define (applyAlgorithm matrix row col)
-  (let ([digit (list-ref (list-ref matrix (- row 1)) (- col 1))])
+  (let ([digit (list-ref (list-ref matrix row) col)])
     (if (checkSingleton digit)
-        (removeNumberSquare
-         (removeNumberColumn
-          (removeNumberRow
-           matrix (- row 1) (first digit))
-          (- col 1) (first digit))
-         (- row 1) (- col 1) (first digit))
-        matrix)))
+        (singletonTransform matrix row col digit)
+        (nonSingletonTransform matrix row col digit)
+        )
+    )
+  )
+
+;;; Perform all checks and actions when a singleton is identified.
+(define (singletonTransform matrix row col digit)
+  (removeNumberSquare
+   (removeNumberColumn
+    (removeNumberRow matrix row (first digit))
+    col (first digit))
+   row col (first digit)
+   )
+  )
+
+;;; Perform all checks and actions when a singleton is not identified.
+(define (nonSingletonTransform matrix row col numbers)
+  (let ([y (combineNonDupeLists matrix row col)])
+    (let ([z (list-set matrix row
+              (list-set (list-ref matrix row) col
+                        (let ([filteredResult (filter (lambda (x) (not (member x y))) numbers)])
+                          (if (checkSingleton filteredResult)
+                              filteredResult
+                              numbers
+                              )
+                          )
+                        )
+              )]
+          )
+      z
+      )
+    )
+  )
 
 ;;; Remove digit from row.
+;;; Returns a row as a list.
 (define (removeNumberRow matrix row digit)
   (let ([x (list-ref matrix row)])
     (list-set matrix row (map (lambda (y) (removeNumber y digit)) x))))
 
 ;;; Create list of non-duplicates from surrounding cells.
+;;; Returns a list. 
 (define (combineNonDupeLists matrix row col)
-  (sort (remove-duplicates
-   (flatten
-    (list
-     (returnUniqueListRow matrix row col)
-     (returnUniqueListCol matrix row col)
-     (returnUniqueListSquare matrix row col))))
-        <))
+  (sort
+   (remove-duplicates
+    (flatten
+     (list
+      (returnUniqueListRow matrix row col)
+      ;(returnUniqueListCol matrix row col)
+      ;(returnUniqueListSquare matrix row col)
+      )
+     )
+    )
+   <)
+  )
 
 ;;; Remove duplicates from a row.
+;;; Returns a list as a row.
 (define (returnUniqueListRow matrix row col)
   (let ([x (list-ref matrix row)])
-    (remove-duplicates (flatten (append (take x col) (drop x (+ col 1)))))))
+    (remove-duplicates
+     (flatten
+      (append
+       (take x col)
+       (drop x (+ 1 col))
+       )
+      )
+     )
+    )
+  )
 
 ;;; Remove duplicates from a column.
 (define (returnUniqueListCol matrix row col)
   (let ([C (map (lambda (x) (list-ref x col)) matrix)])
-    (remove-duplicates (flatten (append (take C row) (drop C (+ row 1)))))))
+    (remove-duplicates
+     (flatten
+      (append
+       (take C row)
+       (drop C (+ 1 row))
+       )
+      )
+     )
+    )
+  )
 
 ;;; Remove duplicates from a square.
 (define (returnUniqueListSquare matrix row col)
-  (remove-duplicates (flatten (returnNumberSquareSet matrix row col))))
-
-;;; Remove digit from set.
-;(define (removeNumberRowSet matrix row column digit)
-;  (let ([x (list-ref matrix row)])
-;    (list-set matrix row (if (> (foldl + 0 (map (lambda (y) (if (member digit y) 1 0)) x)) 1) x (list-set x column (list digit))))))
+  (remove-duplicates
+   (flatten
+    (returnNumberSquareSet matrix row col)
+    )
+   )
+  )
 
 ;;; Remove the digit from column.
 (define (removeNumberColumn matrix column digit)
   (map (lambda (x) (list-set x column (removeNumber (list-ref x column) digit))) matrix))
 
-;;; Remove the digit from column set.
-;(define (removeNumberColumnSet matrix row column digit)
-;  (let ([R (list-ref matrix row)])
-;    (if (> (foldl + 0 (map (lambda (x) (if (member digit (list-ref x column)) 1 0)) matrix)) 1)
-;        matrix
-;        (list-set matrix row (list-set R column (list digit))))))
-
 ;;; Remove the digit from the square.
 (define (removeNumberSquare matrix row col digit)
   (list
-   (if (not (outsideSquare 0 row)) (updateRow (first matrix) col digit) (first matrix))
-   (if (not (outsideSquare 1 row)) (updateRow (second matrix) col digit) (second matrix))
-   (if (not (outsideSquare 2 row)) (updateRow (third matrix) col digit) (third matrix))
-   (if (not (outsideSquare 3 row)) (updateRow (fourth matrix) col digit) (fourth matrix))
-   (if (not (outsideSquare 4 row)) (updateRow (fifth matrix) col digit) (fifth matrix))
-   (if (not (outsideSquare 5 row)) (updateRow (sixth matrix) col digit) (sixth matrix))
-   (if (not (outsideSquare 6 row)) (updateRow (seventh matrix) col digit) (seventh matrix))
-   (if (not (outsideSquare 7 row)) (updateRow (eighth matrix) col digit) (eighth matrix))
-   (if (not (outsideSquare 8 row)) (updateRow (ninth matrix) col digit) (ninth matrix)))
+   (if (insideSquare 0 row) (updateRow (first matrix) col digit) (first matrix))
+   (if (insideSquare 1 row) (updateRow (second matrix) col digit) (second matrix))
+   (if (insideSquare 2 row) (updateRow (third matrix) col digit) (third matrix))
+   (if (insideSquare 3 row) (updateRow (fourth matrix) col digit) (fourth matrix))
+   (if (insideSquare 4 row) (updateRow (fifth matrix) col digit) (fifth matrix))
+   (if (insideSquare 5 row) (updateRow (sixth matrix) col digit) (sixth matrix))
+   (if (insideSquare 6 row) (updateRow (seventh matrix) col digit) (seventh matrix))
+   (if (insideSquare 7 row) (updateRow (eighth matrix) col digit) (eighth matrix))
+   (if (insideSquare 8 row) (updateRow (ninth matrix) col digit) (ninth matrix)))
   )
 
 ;;; Remove the digit from the square.
 (define (updateRow matrix col digit)
   (list
-   (if (not (outsideSquare 0 col)) (removeNumber (first matrix) digit) (first matrix))
-   (if (not (outsideSquare 1 col)) (removeNumber (second matrix) digit) (second matrix))
-   (if (not (outsideSquare 2 col)) (removeNumber (third matrix) digit) (third matrix))
-   (if (not (outsideSquare 3 col)) (removeNumber (fourth matrix) digit) (fourth matrix))
-   (if (not (outsideSquare 4 col)) (removeNumber (fifth matrix) digit) (fifth matrix))
-   (if (not (outsideSquare 5 col)) (removeNumber (sixth matrix) digit) (sixth matrix))
-   (if (not (outsideSquare 6 col)) (removeNumber (seventh matrix) digit) (seventh matrix))
-   (if (not (outsideSquare 7 col)) (removeNumber (eighth matrix) digit) (eighth matrix))
-   (if (not (outsideSquare 8 col)) (removeNumber (ninth matrix) digit) (ninth matrix)))
+   (if (insideSquare 0 col) (removeNumber (first matrix) digit) (first matrix))
+   (if (insideSquare 1 col) (removeNumber (second matrix) digit) (second matrix))
+   (if (insideSquare 2 col) (removeNumber (third matrix) digit) (third matrix))
+   (if (insideSquare 3 col) (removeNumber (fourth matrix) digit) (fourth matrix))
+   (if (insideSquare 4 col) (removeNumber (fifth matrix) digit) (fifth matrix))
+   (if (insideSquare 5 col) (removeNumber (sixth matrix) digit) (sixth matrix))
+   (if (insideSquare 6 col) (removeNumber (seventh matrix) digit) (seventh matrix))
+   (if (insideSquare 7 col) (removeNumber (eighth matrix) digit) (eighth matrix))
+   (if (insideSquare 8 col) (removeNumber (ninth matrix) digit) (ninth matrix)))
   )
 
 ;;; Return a list of numbers from an internal square.
 (define (returnNumberSquareSet matrix row col)
   (list
-   (if (not (outsideSquare 0 row)) (returnRowSquare (first matrix) (= 0 row) col) '())
-   (if (not (outsideSquare 1 row)) (returnRowSquare (second matrix) (= 1 row) col) '())
-   (if (not (outsideSquare 2 row)) (returnRowSquare (third matrix) (= 2 row) col) '())
-   (if (not (outsideSquare 3 row)) (returnRowSquare (fourth matrix) (= 3 row) col) '())
-   (if (not (outsideSquare 4 row)) (returnRowSquare (fifth matrix) (= 4 row) col) '())
-   (if (not (outsideSquare 5 row)) (returnRowSquare (sixth matrix) (= 5 row) col) '())
-   (if (not (outsideSquare 6 row)) (returnRowSquare (seventh matrix) (= 6 row) col) '())
-   (if (not (outsideSquare 7 row)) (returnRowSquare (eighth matrix) (= 7 row) col) '())
-   (if (not (outsideSquare 8 row)) (returnRowSquare (ninth matrix) (= 8 row) col) '())))
+   (if (insideSquare 0 row) (returnRowSquare (first matrix) (= 0 row) col) '())
+   (if (insideSquare 1 row) (returnRowSquare (second matrix) (= 1 row) col) '())
+   (if (insideSquare 2 row) (returnRowSquare (third matrix) (= 2 row) col) '())
+   (if (insideSquare 3 row) (returnRowSquare (fourth matrix) (= 3 row) col) '())
+   (if (insideSquare 4 row) (returnRowSquare (fifth matrix) (= 4 row) col) '())
+   (if (insideSquare 5 row) (returnRowSquare (sixth matrix) (= 5 row) col) '())
+   (if (insideSquare 6 row) (returnRowSquare (seventh matrix) (= 6 row) col) '())
+   (if (insideSquare 7 row) (returnRowSquare (eighth matrix) (= 7 row) col) '())
+   (if (insideSquare 8 row) (returnRowSquare (ninth matrix) (= 8 row) col) '())
+   )
+  )
 
 ;;; Return a list of numbers from a row.
-(define (returnRowSquare matrix row col)
+;;; Returns a list.
+(define (returnRowSquare rowList rowBool col)
   (list
-   (if (not (outsideSquare 0 col)) (if (and row (= col 0)) '() (first matrix)) '())
-   (if (not (outsideSquare 1 col)) (if (and row (= col 1)) '() (second matrix))'())
-   (if (not (outsideSquare 2 col)) (if (and row (= col 2)) '() (third matrix)) '())
-   (if (not (outsideSquare 3 col)) (if (and row (= col 3)) '() (fourth matrix)) '())
-   (if (not (outsideSquare 4 col)) (if (and row (= col 4)) '() (fifth matrix)) '())
-   (if (not (outsideSquare 5 col)) (if (and row (= col 5)) '() (sixth matrix)) '())
-   (if (not (outsideSquare 6 col)) (if (and row (= col 6)) '() (seventh matrix)) '())
-   (if (not (outsideSquare 7 col)) (if (and row (= col 7)) '() (eighth matrix)) '())
-   (if (not (outsideSquare 8 col)) (if (and row (= col 8)) '() (ninth matrix)) '())))
+   (if (insideSquare 0 col) (if (and rowBool (= col 0)) '() (first rowList)) '())
+   (if (insideSquare 1 col) (if (and rowBool (= col 1)) '() (second rowList))'())
+   (if (insideSquare 2 col) (if (and rowBool (= col 2)) '() (third rowList)) '())
+   (if (insideSquare 3 col) (if (and rowBool (= col 3)) '() (fourth rowList)) '())
+   (if (insideSquare 4 col) (if (and rowBool (= col 4)) '() (fifth rowList)) '())
+   (if (insideSquare 5 col) (if (and rowBool (= col 5)) '() (sixth rowList)) '())
+   (if (insideSquare 6 col) (if (and rowBool (= col 6)) '() (seventh rowList)) '())
+   (if (insideSquare 7 col) (if (and rowBool (= col 7)) '() (eighth rowList)) '())
+   (if (insideSquare 8 col) (if (and rowBool (= col 8)) '() (ninth rowList)) '())
+   )
+  )
 
 ;;; Check rows and columns still within square.
-(define (outsideSquare original current)
-  (or
-   (< current (reduceSquareRootNumber original))
-   (> current (+ (reduceSquareRootNumber original) 2))))
+;;; Returns true or false depending on whether current is within the square represented by original.
+(define (insideSquare original current)
+  (and
+   (>= current (reduceSquareRootNumber original))
+   (<= current (+ (reduceSquareRootNumber original) 2))
+   )
+  )
 
 ;;; Reduce to square root number.
+;;; Returns the digit rounded down to 1st digit of enclosing square.
 (define (reduceSquareRootNumber digit)
   (cond
-    [(< digit 3) 1]
-    [(< digit 6) 4]
-    [(< digit 9) 7]))
+    [(< digit 3) 0]
+    [(< digit 6) 3]
+    [(< digit 9) 6]
+    )
+  )
 
 ;;; Remove number from set.
+;;; Returns the set passed or the set with the digit removed.
 (define (removeNumber set digit)
   (if (eq? #f (checkSingleton set))
       (filter (lambda (x)  (not (= x digit))) set)
-      set))
-
+      set
+      )
+  )
 
 ;;;
 ;;;  PROVIDER FUNCTION
@@ -209,17 +292,18 @@
 
 ;;; Provides all functions for testing.
 (provide checkSingleton
+         applyAlgorithm
          combineNonDupeLists
          countNonSingletons
-         outsideSquare
+         insideSquare
+         nonSingletonTransform
          reduceSquareRootNumber
          removeNumber
          removeNumberColumn
-;         removeNumberColumnSet
          removeNumberRow
-;         removeNumberRowSet
          removeNumberSquare
-;         removeNumberSquareSet
+         returnNumberSquareSet
+         returnRowSquare
          returnUniqueListCol
          returnUniqueListRow
          returnUniqueListSquare
